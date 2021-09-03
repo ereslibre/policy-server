@@ -1,6 +1,5 @@
 use crate::communication::EvalRequest;
 use crate::settings::Policy;
-use crate::utils::convert_yaml_map_to_json;
 use anyhow::{anyhow, Result};
 use policy_evaluator::policy_evaluator::{PolicyEvaluator, ValidateRequest};
 use std::collections::HashMap;
@@ -21,24 +20,10 @@ impl Worker {
         let mut evs: HashMap<String, PolicyEvaluator> = HashMap::new();
 
         for (id, policy) in policies.iter() {
-            let settings = policy.settings();
-
-            let settings_json =
-                settings.and_then(|settings| match convert_yaml_map_to_json(settings) {
-                    Ok(settings) => Some(settings),
-                    Err(err) => {
-                        error!(
-                            error = err.to_string().as_str(),
-                            "cannot convert YAML settings to JSON"
-                        );
-                        None
-                    }
-                });
-
             let policy_evaluator = PolicyEvaluator::from_file(
                 id.to_string(),
                 &policy.wasm_module_path,
-                settings_json,
+                policy.settings.clone(),
             )?;
 
             let set_val_rep = policy_evaluator.validate_settings();

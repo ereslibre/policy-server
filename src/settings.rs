@@ -1,29 +1,37 @@
 use anyhow::Result;
 
 use serde::Deserialize;
-use serde_yaml::{Mapping, Value};
 use std::collections::HashMap;
 
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
 #[derive(Deserialize, Debug, Clone)]
+pub struct ClusterContextResource {
+    group: String,
+    version: String,
+    kind: String,
+    namespace: Option<String>,
+    // add account token?
+}
+
+#[derive(Deserialize, Debug, Default, Clone)]
+pub struct ClusterContext {
+    resources: Vec<ClusterContextResource>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
 pub struct Policy {
     pub url: String,
+
+    #[serde(default)]
+    pub cluster_context: ClusterContext,
 
     #[serde(skip)]
     pub wasm_module_path: PathBuf,
 
-    #[serde(flatten)]
-    extra_fields: HashMap<String, Value>,
-}
-
-impl Policy {
-    pub fn settings(&self) -> Option<Mapping> {
-        self.extra_fields
-            .get("settings")
-            .and_then(|settings| serde_yaml::from_value(settings.clone()).ok())
-    }
+    #[serde(default)]
+    pub settings: HashMap<String, serde_json::Value>,
 }
 
 // Reads the policies configuration file, returns a HashMap with String as value
@@ -41,40 +49,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn get_settings_when_data_is_provided() {
-        let input = r#"
----
-example:
-  url: file:///tmp/namespace-validate-policy.wasm
-  settings:
-    valid_namespace: valid
-"#;
-        let policies: HashMap<String, Policy> = serde_yaml::from_str(&input).unwrap();
-        assert!(!policies.is_empty());
-
-        let policy = policies.get("example").unwrap();
-        let settings = policy.settings();
-        assert!(settings.is_some());
-    }
-
-    #[test]
-    fn get_settings_when_empty_map_is_provided() {
-        let input = r#"
----
-example:
-  url: file:///tmp/namespace-validate-policy.wasm
-  settings: {}
-"#;
-
-        let policies: HashMap<String, Policy> = serde_yaml::from_str(&input).unwrap();
-        assert!(!policies.is_empty());
-
-        let policy = policies.get("example").unwrap();
-        let settings = policy.settings();
-        assert!(settings.is_some());
-    }
-
-    #[test]
     fn get_settings_when_no_settings_are_provided() {
         let input = r#"
 ---
@@ -86,26 +60,6 @@ example:
         assert!(!policies.is_empty());
 
         let policy = policies.get("example").unwrap();
-        let settings = policy.settings();
-        assert!(settings.is_none());
-    }
-
-    #[test]
-    fn get_settings_when_settings_is_null() {
-        let input = r#"
-{
-    "privileged-pods": {
-        "url": "registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.5",
-        "settings": null
-    }
-}
-"#;
-
-        let policies: HashMap<String, Policy> = serde_yaml::from_str(&input).unwrap();
-        assert!(!policies.is_empty());
-
-        let policy = policies.get("privileged-pods").unwrap();
-        let settings = policy.settings();
-        assert!(settings.is_none());
+        assert!(policy.settings.is_empty());
     }
 }

@@ -1,7 +1,9 @@
 use crate::communication::KubePollerBootRequest;
+use crate::settings::Policy;
 use anyhow::{anyhow, Result};
 use kube::Client;
 use policy_evaluator::cluster_context::ClusterContext;
+use std::collections::HashMap;
 use tokio::{
     sync::oneshot,
     time::{sleep, Duration},
@@ -14,7 +16,7 @@ pub(crate) struct Poller {
 }
 
 impl Poller {
-    pub(crate) fn new(bootstrap_rx: oneshot::Receiver<KubePollerBootRequest>) -> Result<Poller> {
+    pub(crate) fn new(bootstrap_rx: oneshot::Receiver<KubePollerBootRequest>, policies: HashMap<String, Policy>) -> Result<Poller> {
         let runtime = tokio::runtime::Builder::new_current_thread()
             .enable_all()
             .build()?;
@@ -47,7 +49,6 @@ impl Poller {
         }
 
         self.runtime.block_on(async {
-
             info!("spawning cluster context refresh loop");
             loop {
                 let kubernetes_client = Client::try_default()

@@ -3,7 +3,7 @@ extern crate kube;
 
 use anyhow::Result;
 use opentelemetry::global::shutdown_tracer_provider;
-use std::{process, thread};
+use std::{collections::HashMap, process, thread};
 use tokio::{runtime::Runtime, sync::mpsc, sync::oneshot};
 use tracing::{debug, error, info};
 
@@ -13,7 +13,6 @@ mod cli;
 mod kube_poller;
 mod server;
 mod settings;
-mod utils;
 mod worker;
 
 mod worker_pool;
@@ -79,8 +78,9 @@ fn main() -> Result<()> {
         oneshot::channel::<KubePollerBootRequest>();
 
     // Spawn the system thread that runs the main loop of the worker pool manager
+    let policies_ = policies.clone();
     let kube_poller_thread = thread::spawn(move || {
-        let poller = match kube_poller::Poller::new(kube_poller_bootstrap_req_rx) {
+        let poller = match kube_poller::Poller::new(kube_poller_bootstrap_req_rx, policies_) {
             Ok(p) => p,
             Err(e) => {
                 fatal_error(format!(
@@ -152,6 +152,7 @@ fn main() -> Result<()> {
         let (kube_poller_bootstrap_res_tx, mut kube_poller_bootstrap_res_rx) =
             oneshot::channel::<Result<()>>();
         let kube_poller_bootstrap_data = KubePollerBootRequest {
+            cluster_context: HashMap::new(),
             resp_chan: kube_poller_bootstrap_res_tx,
         };
         if kube_poller_bootstrap_req_tx

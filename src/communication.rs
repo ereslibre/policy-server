@@ -3,7 +3,7 @@ use policy_evaluator::validation_response::ValidationResponse;
 use std::collections::HashMap;
 use tokio::sync::oneshot;
 
-use crate::settings::Policy;
+use crate::settings::{ClusterContext, Policy};
 
 #[derive(Debug)]
 pub(crate) struct EvalRequest {
@@ -25,8 +25,10 @@ pub(crate) struct WorkerPoolBootRequest {
     pub resp_chan: oneshot::Sender<Result<()>>,
 }
 
-// Holds the bootstrap parameters of a kube pooler
+// Holds the bootstrap parameters of a kube poller
 pub(crate) struct KubePollerBootRequest {
+    // map containing the policies that request cluster context
+    pub cluster_context: HashMap<String, ClusterContext>,
     // channel used to send back bootstrap status:
     // * Ok(()) -> all good
     // * Err(e) -> one or more workers couldn't bootstrap
