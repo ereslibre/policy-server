@@ -1,12 +1,20 @@
 use crate::settings::{read_policies_file, Policy};
 use anyhow::{anyhow, Result};
 use clap::{crate_authors, crate_description, crate_name, crate_version, App, Arg};
+use futures::stream::Stream;
+use futures::StreamExt;
 use itertools::Itertools;
 use lazy_static::lazy_static;
+use opentelemetry::sdk::metrics::{selectors, PushController};
+use opentelemetry::{
+    metrics::{self},
+    Context, Key, KeyValue,
+};
+use opentelemetry_otlp::{ExportConfig, WithExportConfig};
 use policy_evaluator::burrego::opa::builtins as opa_builtins;
 use policy_fetcher::registry::config::{read_docker_config_json_file, DockerConfig};
 use policy_fetcher::sources::{read_sources_file, Sources};
-use std::{collections::HashMap, net::SocketAddr, path::Path};
+use std::{collections::HashMap, net::SocketAddr, path::Path, time::Duration};
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::{fmt, EnvFilter};
 
@@ -116,6 +124,13 @@ pub(crate) fn build_cli() -> App<'static, 'static> {
                 .takes_value(true)
                 .help("Path to a Docker config.json-like path. Can be used to indicate registry authentication details"),
         )
+        .arg(
+            Arg::with_name("enable-metrics")
+                .long("enable-metrics")
+                .required(false)
+                .takes_value(false)
+                .help("Enable metrics"),
+        )
         .long_version(VERSION_AND_BUILTINS.as_str())
 }
 
@@ -148,6 +163,28 @@ pub(crate) fn policies(matches: &clap::ArgMatches) -> Result<HashMap<String, Pol
             e
         )
     })
+}
+
+// Skip first immediate tick from tokio, not needed for async_std.
+fn delayed_interval(duration: Duration) -> impl Stream<Item = tokio::time::Instant> {
+    opentelemetry::util::tokio_interval_stream(duration).skip(1)
+}
+
+// Initialize meter for notifying metrics.
+pub(crate) fn init_meter() -> metrics::Result<PushController> {
+    let export_config = ExportConfig {
+        endpoint: "http://localhost:4317".to_string(),
+        ..Default::default()
+    };
+    opentelemetry_otlp::new_pipeline()
+        .metrics(tokio::spawn, delayed_interval)
+        .with_exporter(
+            opentelemetry_otlp::new_exporter()
+                .tonic()
+                .with_export_config(export_config),
+        )
+        .with_aggregator_selector(selectors::simple::Selector::Exact)
+        .build()
 }
 
 // Setup the tracing system. This MUST be done inside of a tokio Runtime

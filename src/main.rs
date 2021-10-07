@@ -118,6 +118,14 @@ fn main() -> Result<()> {
             fatal_error(err.to_string());
         }
 
+        // Setup the meter for providing metrics related to the policy-server and policies
+        if matches.is_present("enable-metrics") {
+            println!("enable metrics is yes");
+            if let Err(err) = cli::init_meter() {
+                fatal_error(err.to_string());
+            }
+        }
+
         // Download policies
         let policies_download_dir = matches.value_of("policies-download-dir").unwrap();
         let policies_total = policies.len();
