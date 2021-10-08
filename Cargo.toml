@@ -36,3 +36,5 @@ tracing-futures = "0.2"
 tracing-opentelemetry = "0.15.0"
 tracing-subscriber = { version= "0.2", features = ["fmt"] }
 
+[patch."https://github.com/kubewarden/policy-evaluator"]
+policy-evaluator = { path = "../policy-evaluator" }

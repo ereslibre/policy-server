@@ -1,14 +1,3 @@
-# This is the minimal configuration to start a OpenTelemetry collector
-# that collects traces via the otlp protocol, and then sends them via
-# batches to a central jaeger collector
-#
-# A simple otel-collector instance can be started in this way:
-#
-#   docker run --rm -p 4317:4317 \
-#     -v `pwd`/otel-collector-minimal-config.yaml:/etc/otel/config.yaml:ro \
-#     otel/opentelemetry-collector-dev:latest
-#
-
 receivers:
   otlp:
     protocols:
@@ -19,12 +8,15 @@ processors:
 
 exporters:
   jaeger:
-    # TODO: change the IP address with the IP/FQDN of your jaeger endpoint
     endpoint: "172.17.0.2:14250"
 
 service:
   pipelines:
     traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [jaeger]
+    metrics:
       receivers: [otlp]
       processors: [batch]
       exporters: [jaeger]
