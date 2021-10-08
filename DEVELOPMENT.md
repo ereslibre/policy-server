@@ -37,7 +37,7 @@ Start the OpenTelemetry collector:
 docker run --rm \
   -p 4317:4317 \
   -v `pwd`/otel-collector-minimal-config.yaml:/etc/otel/config.yaml:ro \
-  otel/opentelemetry-collector-dev:latest \
+  otel/opentelemetry-collector-contrib-dev:latest \
     --log-level debug \
     --config /etc/otel/config.yaml
 ```
