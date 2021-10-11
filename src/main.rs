@@ -25,6 +25,8 @@ use std::path::PathBuf;
 mod communication;
 use communication::{EvalRequest, KubePollerBootRequest, WorkerPoolBootRequest};
 
+mod meters;
+
 fn main() -> Result<()> {
     let matches = cli::build_cli().get_matches();
 
@@ -116,14 +118,6 @@ fn main() -> Result<()> {
         // because some collectors rely on it and would panic otherwise.
         if let Err(err) = cli::setup_tracing(&matches) {
             fatal_error(err.to_string());
-        }
-
-        // Setup the meter for providing metrics related to the policy-server and policies
-        if matches.is_present("enable-metrics") {
-            println!("enable metrics is yes");
-            if let Err(err) = cli::init_meter() {
-                fatal_error(err.to_string());
-            }
         }
 
         // Download policies

@@ -170,8 +170,8 @@ fn delayed_interval(duration: Duration) -> impl Stream<Item = tokio::time::Insta
     opentelemetry::util::tokio_interval_stream(duration).skip(1)
 }
 
-// Initialize meter for notifying metrics.
-pub(crate) fn init_meter() -> metrics::Result<PushController> {
+// Initialize meters for notifying metrics.
+pub(crate) fn init_meters() -> metrics::Result<PushController> {
     let export_config = ExportConfig {
         endpoint: "http://localhost:4317".to_string(),
         ..Default::default()

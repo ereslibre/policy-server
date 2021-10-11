@@ -7,8 +7,8 @@ use policy_evaluator::{
     policy_evaluator::{PolicyEvaluator, ValidateRequest},
     policy_metadata::Metadata,
 };
-use std::collections::HashMap;
 use std::fmt;
+use std::{collections::HashMap, ops::Add};
 use tokio::sync::mpsc::Receiver;
 use tracing::{error, info_span};
 
@@ -130,7 +130,19 @@ impl Worker {
 
             let res = match self.evaluators.get_mut(&req.policy_id) {
                 Some(policy_evaluator) => {
-                    let resp = policy_evaluator.validate(ValidateRequest::new(req.req));
+                    let resp = {
+                        crate::meters::registerPolicyEvaluation(crate::meters::PolicyEvaluation {
+                            policy_name: policy_evaluator.policy.id.clone(),
+                            resource_name: String::new(),
+                            resource_kind: String::new(),
+                            resource_namespace: None,
+                            resource_request_operation: String::new(),
+                            accepted: false,
+                            mutated: false,
+                            error_code: 200,
+                        });
+                        policy_evaluator.validate(ValidateRequest::new(req.req))
+                    };
                     req.resp_chan.send(Some(resp))
                 }
                 None => req.resp_chan.send(None),
