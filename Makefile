@@ -38,9 +38,10 @@ metrics:
 		jaegertracing/all-in-one:latest
 	docker run -d --rm \
 		-p 4317:4317 \
-    -p 8888:8888 \
+		-p 8888:8888 \
+		-p 8889:8889 \
 		-v $(PWD)/otel-collector-minimal-config.yaml:/etc/otel/config.yaml:ro \
-		otel/opentelemetry-collector-contrib-dev:latest \
+		otel/opentelemetry-collector:0.36.0 \
 		--log-level debug \
 		--config /etc/otel/config.yaml
 	docker run -d --rm \

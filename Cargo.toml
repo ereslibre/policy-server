@@ -22,7 +22,7 @@ kubewarden-policy-sdk = "0.2.4"
 lazy_static = "1.4.0"
 num_cpus = "1.13.0"
 openssl = "0.10.32"
-opentelemetry = { version = "*", default-features = false, features = ["metrics", "trace", "rt-tokio"] }
+opentelemetry = { version = "*", default-features = false, features = ["metrics", "trace", "rt-tokio", "serialize"] }
 opentelemetry-otlp = { version = "0.9.0", features = ["metrics", "tonic"] }
 policy-evaluator = { git = "https://github.com/kubewarden/policy-evaluator", tag = "v0.2.1" }
 policy-fetcher = { git = "https://github.com/kubewarden/policy-fetcher", tag = "v0.1.14" }

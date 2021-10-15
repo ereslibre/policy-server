@@ -173,7 +173,7 @@ fn delayed_interval(duration: Duration) -> impl Stream<Item = tokio::time::Insta
 // Initialize meters for notifying metrics.
 pub(crate) fn init_meters() -> metrics::Result<PushController> {
     let export_config = ExportConfig {
-        endpoint: "http://localhost:4317".to_string(),
+        endpoint: "http://desktop:4317".to_string(),
         ..Default::default()
     };
     opentelemetry_otlp::new_pipeline()
@@ -183,62 +183,7 @@ pub(crate) fn init_meters() -> metrics::Result<PushController> {
                 .tonic()
                 .with_export_config(export_config),
         )
-        .with_aggregator_selector(selectors::simple::Selector::Exact)
         .build()
-}
-
-// Setup the tracing system. This MUST be done inside of a tokio Runtime
-// because some collectors rely on it and would panic otherwise.
-pub(crate) fn setup_tracing(matches: &clap::ArgMatches) -> Result<()> {
-    // setup logging
-    let filter_layer = EnvFilter::new(matches.value_of("log-level").unwrap_or_default())
-        // some of our dependencies generate trace events too, but we don't care about them ->
-        // let's filter them
-        .add_directive("cranelift_codegen=off".parse().unwrap())
-        .add_directive("cranelift_wasm=off".parse().unwrap())
-        .add_directive("regalloc=off".parse().unwrap())
-        .add_directive("hyper=off".parse().unwrap())
-        .add_directive("h2=off".parse().unwrap())
-        .add_directive("tower=off".parse().unwrap());
-
-    match matches.value_of("log-fmt").unwrap_or_default() {
-        "json" => tracing_subscriber::registry()
-            .with(filter_layer)
-            .with(fmt::layer().json())
-            .init(),
-        "text" => tracing_subscriber::registry()
-            .with(filter_layer)
-            .with(fmt::layer())
-            .init(),
-        "otlp" => {
-            // Create a new OpenTelemetry pipeline sending events to a
-            // OpenTelemetry collector using the OTLP format.
-            // The collector must run on localhost (eg: use a sidecar inside of k8s)
-            // using GRPC
-            let tracer = opentelemetry_otlp::new_pipeline()
-                .tracing()
-                .with_exporter(opentelemetry_otlp::new_exporter().tonic())
-                .with_trace_config(opentelemetry::sdk::trace::config().with_resource(
-                    opentelemetry::sdk::Resource::new(vec![opentelemetry::KeyValue::new(
-                        "service.name",
-                        SERVICE_NAME,
-                    )]),
-                ))
-                .install_batch(opentelemetry::runtime::Tokio)?;
-
-            // Create a tracing layer with the configured tracer
-            let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
-            tracing_subscriber::registry()
-                .with(filter_layer)
-                .with(telemetry)
-                .with(fmt::layer())
-                .init()
-        }
-
-        _ => return Err(anyhow!("Unknown log message format")),
-    };
-
-    Ok(())
 }
 
 pub(crate) fn remote_server_options(

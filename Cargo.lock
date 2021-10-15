@@ -1822,6 +1822,7 @@ dependencies = [
  "percent-encoding 2.1.0",
  "pin-project",
  "rand",
+ "serde",
  "thiserror",
  "tokio",
  "tokio-stream",

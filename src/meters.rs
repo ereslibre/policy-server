@@ -7,7 +7,7 @@ use opentelemetry::{
     KeyValue,
 };
 
-const METER_NAME: &str = "kubewarden.io";
+const METER_NAME: &str = "kubewarden";
 
 lazy_static! {
     pub(crate) static ref POLICY_EVALUATIONS: Counter<u64> =
@@ -29,7 +29,7 @@ pub(crate) struct PolicyEvaluation {
 
 impl Into<Vec<KeyValue>> for PolicyEvaluation {
     fn into(self) -> Vec<KeyValue> {
-        Vec::new()
+        vec![KeyValue::new("policy_name", self.policy_name)]
     }
 }
 
