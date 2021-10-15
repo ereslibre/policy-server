@@ -36,10 +36,20 @@ Start the OpenTelemetry collector:
 ```console
 docker run --rm \
   -p 4317:4317 \
+  -p 8889:8889 \
   -v `pwd`/otel-collector-minimal-config.yaml:/etc/otel/config.yaml:ro \
   otel/opentelemetry-collector-dev:latest \
     --log-level debug \
     --config /etc/otel/config.yaml
+```
+
+Start prometheus, so it can start scraping metrics:
+
+```console
+docker run -d --rm \
+  -p 9090:9090 \
+  -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
+  prom/prometheus
 ```
 
 Now start policy-server:
