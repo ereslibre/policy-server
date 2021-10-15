@@ -7,7 +7,6 @@ use itertools::Itertools;
 use policy_evaluator::{
     policy_evaluator::{PolicyEvaluator, ValidateRequest},
     policy_metadata::Metadata,
-    validation_response::ValidationResponse,
 };
 use std::collections::HashMap;
 use std::fmt;
@@ -132,39 +131,10 @@ impl Worker {
             let _enter = span.enter();
 
             let res = match self.evaluators.get_mut(&req.policy_id) {
-                Some(policy_evaluator) => match serde_json::to_value(req.req.clone()) {
-                    Ok(json) => {
-                        let resp = policy_evaluator.validate(ValidateRequest::new(json));
-                        let accepted = resp.allowed;
-                        let mutated = resp.patch.is_some();
-                        let error_code = if let Some(status) = &resp.status {
-                            status.code
-                        } else {
-                            None
-                        };
-                        let res = req.resp_chan.send(Some(resp));
-                        metrics::observe_policy_evaluation(metrics::PolicyEvaluation {
-                            policy_name: policy_evaluator.policy.id.clone(),
-                            resource_name: req.req.name.unwrap_or_else(|| "unknown".to_string()),
-                            resource_namespace: req.req.namespace,
-                            resource_kind: req.req.request_kind.unwrap_or_default().kind,
-                            resource_request_operation: req.req.operation.clone(),
-                            accepted,
-                            mutated,
-                            error_code,
-                        });
-                        res
-                    }
-                    Err(e) => {
-                        let error_msg = format!("Failed to serialize AdmissionReview: {:?}", e);
-                        error!("{}", error_msg);
-                        req.resp_chan.send(Some(ValidationResponse::reject(
-                            req.policy_id,
-                            error_msg,
-                            hyper::StatusCode::BAD_REQUEST.as_u16(),
-                        )))
-                    }
-                },
+                Some(policy_evaluator) => {
+                    let resp = policy_evaluator.validate(ValidateRequest::new(req.req));
+                    req.resp_chan.send(Some(resp))
+                }
                 None => req.resp_chan.send(None),
             };
             if res.is_err() {
