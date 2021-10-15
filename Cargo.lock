@@ -318,7 +318,7 @@ checksum = "9c59e7af012c713f529e7a3ee57ce9b31ddd858d4b512923602f74608b009631"
 [[package]]
 name = "burrego"
 version = "0.1.1"
-source = "git+https://github.com/kubewarden/policy-evaluator?tag=v0.2.1#f822307cec22b3583c76300a1f814fe3fb6e7384"
+source = "git+https://github.com/kubewarden/policy-evaluator?branch=main#8eadf1f28f84b37d3154fb6bb8d8fede35187aff"
 dependencies = [
  "anyhow",
  "base64 0.13.0",
@@ -687,6 +687,16 @@ checksum = "ccc0a48a9b826acdf4028595adc9db92caea352f7af011a3034acd172a52a0aa"
 dependencies = [
  "quote",
  "syn",
+]
+
+[[package]]
+name = "dashmap"
+version = "4.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e77a43b28d0668df09411cb0bc9a8c2adc40f9a048afe863e05fd43251e8e39c"
+dependencies = [
+ "cfg-if",
+ "num_cpus",
 ]
 
 [[package]]
@@ -1805,12 +1815,15 @@ checksum = "e1cf9b1c4e9a6c4de793c632496fa490bdc0e1eea73f0c91394f7b6990935d22"
 dependencies = [
  "async-trait",
  "crossbeam-channel",
+ "dashmap",
+ "fnv",
  "futures",
  "js-sys",
  "lazy_static",
  "percent-encoding 2.1.0",
  "pin-project",
  "rand",
+ "serde",
  "thiserror",
  "tokio",
  "tokio-stream",
@@ -1971,7 +1984,7 @@ checksum = "3831453b3449ceb48b6d9c7ad7c96d5ea673e9b470a1dc578c2ce6521230884c"
 [[package]]
 name = "policy-evaluator"
 version = "0.2.1"
-source = "git+https://github.com/kubewarden/policy-evaluator?tag=v0.2.1#f822307cec22b3583c76300a1f814fe3fb6e7384"
+source = "git+https://github.com/kubewarden/policy-evaluator?branch=main#8eadf1f28f84b37d3154fb6bb8d8fede35187aff"
 dependencies = [
  "anyhow",
  "base64 0.13.0",
@@ -2021,6 +2034,7 @@ dependencies = [
  "anyhow",
  "async-stream",
  "clap",
+ "futures",
  "futures-util",
  "hyper",
  "hyper-tls",
