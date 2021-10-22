@@ -118,9 +118,9 @@ pub(crate) fn build_cli() -> App<'static, 'static> {
         )
         .arg(
             Arg::with_name("enable-metrics")
+                .env("KUBEWARDEN_ENABLE_METRICS")
                 .long("enable-metrics")
                 .required(false)
-                .takes_value(false)
                 .help("Enable metrics"),
         )
         .long_version(VERSION_AND_BUILTINS.as_str())
