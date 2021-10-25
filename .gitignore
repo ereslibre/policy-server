@@ -1,2 +1,6 @@
 /target
 /.cargo
+# policies.yml copied from example
+/policies.yml
+# Downloaded policies
+/registry
