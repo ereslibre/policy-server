@@ -12,13 +12,10 @@ RUN zypper in -y curl && \
 
 WORKDIR /usr/src/policy-server
 COPY . .
-RUN cargo install --root /usr/local/cargo --path .
+RUN cargo install --debug --root /usr/local/cargo --path .
 
 FROM registry.suse.com/suse/sle15:latest as sle
-
-RUN zypper download libopenssl1_1
-# move rpm packages to / to strip arch from path:
-RUN find /var/cache/zypp/packages/ -iname '*.rpm' -exec mv '{}' / \;
+LABEL org.opencontainers.image.source https://github.com/kubewarden/policy-server
 
 RUN useradd \
   --system \
@@ -26,17 +23,7 @@ RUN useradd \
   --uid 2000 \
   kubewarden
 
-# final image
-FROM registry.suse.com/bci/minimal
-LABEL org.opencontainers.image.source https://github.com/kubewarden/policy-server
-
-USER root
-
-COPY --from=sle /etc/passwd /etc/passwd
-COPY --from=sle /*.rpm /
 COPY --from=builder /usr/local/cargo/bin/policy-server /usr/local/bin/policy-server
-
-RUN rpm --install /*.rpm; rm -f /*.rpm
 
 USER kubewarden
 
