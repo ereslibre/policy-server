@@ -1571,6 +1571,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "k8s-openapi"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d2ae2c04fcee6b01b04e3aadd56bb418932c8e0a9d8a93f48bc68c6bdcdb559d"
+dependencies = [
+ "base64",
+ "bytes",
+ "chrono",
+ "serde",
+ "serde-value",
+ "serde_json",
+]
+
+[[package]]
 name = "keccak"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2467,7 +2481,7 @@ dependencies = [
  "futures-util",
  "hyper",
  "itertools",
- "k8s-openapi 0.14.0",
+ "k8s-openapi 0.15.0",
  "kube",
  "kubewarden-policy-sdk",
  "lazy_static",
