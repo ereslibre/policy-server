@@ -245,6 +245,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
+name = "base64"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a4a4ddaa51a5bc52a6948f74c06d20aaaddb71924eab79b8c97a8c556e942d6a"
+
+[[package]]
 name = "base64ct"
 version = "1.1.1"
 source = "git+https://github.com/RustCrypto/formats.git?tag=base64ct/v1.1.1#c4982b74e21e7e3d0ca1101cc5e37eeb7fc0fd07"
@@ -317,7 +323,7 @@ version = "0.1.2"
 source = "git+https://github.com/kubewarden/policy-evaluator?tag=v0.2.15#a9e9123bf16cd2308a4d20aff13c8446f96d0c96"
 dependencies = [
  "anyhow",
- "base64",
+ "base64 0.13.0",
  "chrono",
  "chrono-tz",
  "clap",
@@ -1380,7 +1386,7 @@ version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5617e92fc2f2501c3e2bc6ce547cad841adba2bae5b921c7e52510beca6d084c"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "bytes",
  "http",
  "httpdate",
@@ -1530,7 +1536,7 @@ version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "98328bb4f360e6b2ceb1f95645602c7014000ef0c3809963df8ad3a3a09f8d99"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "crypto-mac",
  "digest 0.9.0",
  "hmac",
@@ -1545,7 +1551,7 @@ version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bcc1f973542059e6d5a6d63de6a9539d0ec784f82b2327f3c1915d33200bc6a4"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "bytes",
  "chrono",
  "http",
@@ -1562,7 +1568,7 @@ version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0489fc937cc7616a9abfa61bf39c250d7e32e1325ef028c8d9278dd24ea395b3"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "bytes",
  "chrono",
  "serde",
@@ -1593,7 +1599,7 @@ version = "0.68.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cced1a3e738c2a4bccb52d33066632369c668f366a71c9c58139d9360e1a341d"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "bytes",
  "chrono",
  "dirs-next",
@@ -2221,7 +2227,7 @@ version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e9a3b09a20e374558580a4914d3b7d89bd61b954a5a5e1dcbea98753addb1947"
 dependencies = [
- "base64",
+ "base64 0.13.0",
 ]
 
 [[package]]
@@ -2299,7 +2305,7 @@ name = "picky"
 version = "7.0.0-rc.2"
 source = "git+https://github.com/Devolutions/picky-rs.git?tag=picky-7.0.0-rc.2#912af2ea93051e53aadf97a1dc8bb5e43dee51ee"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "digest 0.10.3",
  "md-5",
  "num-bigint-dig",
@@ -2342,7 +2348,7 @@ name = "picky-asn1-x509"
 version = "0.7.0"
 source = "git+https://github.com/Devolutions/picky-rs.git?tag=picky-7.0.0-rc.2#912af2ea93051e53aadf97a1dc8bb5e43dee51ee"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "num-bigint-dig",
  "oid",
  "picky-asn1",
@@ -2410,7 +2416,7 @@ version = "0.2.15"
 source = "git+https://github.com/kubewarden/policy-evaluator?tag=v0.2.15#a9e9123bf16cd2308a4d20aff13c8446f96d0c96"
 dependencies = [
  "anyhow",
- "base64",
+ "base64 0.13.0",
  "burrego",
  "cached",
  "hyper",
@@ -2439,7 +2445,7 @@ dependencies = [
  "async-std",
  "async-stream",
  "async-trait",
- "base64",
+ "base64 0.13.0",
  "directories",
  "lazy_static",
  "oci-distribution",
@@ -2477,7 +2483,7 @@ dependencies = [
  "policy-evaluator",
  "policy-fetcher",
  "rustls",
- "rustls-pemfile 0.3.0",
+ "rustls-pemfile 1.0.2",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -2751,7 +2757,7 @@ version = "0.11.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87f242f1488a539a79bac6dbe7c8609ae43b7914b7736210f239a37cccb32525"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "bytes",
  "encoding_rs",
  "futures-core",
@@ -2899,16 +2905,16 @@ version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5eebeaeb360c87bfb72e84abdb3447159c0eaececf1bef2aecd65a8be949d1c9"
 dependencies = [
- "base64",
+ "base64 0.13.0",
 ]
 
 [[package]]
 name = "rustls-pemfile"
-version = "0.3.0"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ee86d63972a7c661d1536fefe8c3c8407321c3df668891286de28abcd087360"
+checksum = "d194b56d58803a43635bdc398cd17e383d6f71f9182b9a192c127ca42494a59b"
 dependencies = [
- "base64",
+ "base64 0.21.0",
 ]
 
 [[package]]
@@ -3153,7 +3159,7 @@ version = "0.2.0"
 source = "git+https://github.com/sigstore/sigstore-rs?rev=3954129ff0fc91beb8b8a6568ecb09e8c2d19392#3954129ff0fc91beb8b8a6568ecb09e8c2d19392"
 dependencies = [
  "async-trait",
- "base64",
+ "base64 0.13.0",
  "lazy_static",
  "oci-distribution",
  "olpc-cjson",
@@ -3487,7 +3493,7 @@ checksum = "ff08f4649d10a70ffa3522ca559031285d8e421d727ac85c60825761818f5d0a"
 dependencies = [
  "async-stream",
  "async-trait",
- "base64",
+ "base64 0.13.0",
  "bytes",
  "futures-core",
  "futures-util",
@@ -3575,7 +3581,7 @@ version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aba3f3efabf7fb41fae8534fc20a817013dd1c12cb45441efb6c82e6556b4cd8"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "bitflags",
  "bytes",
  "futures-core",
@@ -4099,7 +4105,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da4439d99100298344567c0eb6916ad5864e99e54760b8177c427e529077fb30"
 dependencies = [
  "anyhow",
- "base64",
+ "base64 0.13.0",
  "bincode",
  "directories-next",
  "file-per-thread-logger",
@@ -4497,7 +4503,7 @@ version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ffc90836a84cb72e6934137b1504d0cae304ef5d83904beb0c8d773bbfe256ed"
 dependencies = [
- "base64",
+ "base64 0.13.0",
  "chrono",
  "data-encoding",
  "der-parser",
